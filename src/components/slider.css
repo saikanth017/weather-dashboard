@@ -1,0 +1,55 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.carousel {
+  padding: 5rem;
+  /* background-color: black; */
+  color: white;
+  max-width: 100vw;
+  /* height: 100vh;
+  width: 100vw; */
+}
+
+.box {
+  background-color: rgba(255, 255, 255, 0.06);
+  height: 300px;
+  max-width: 90px;
+  border-radius: 18px;
+}
+
+.box h3 {
+  text-align: center;
+}
+
+.slick-slide div {
+  margin: 0 1rem;
+}
+
+.MuiContainer-root {
+  padding: 22px;
+}
+
+/* .slick-slider {
+  margin: 0;
+} */
+
+/* .slick-next {
+  right: -40px !important;
+} */
+
+/* .slice-prev {
+  left: -40px;
+} */
+
+.slick-dots li.slick-active button:before {
+  color: lightgreen !important;
+}
+
+.slick-dots li button:before {
+  color: white;
+  font-size: 1rem;
+  top: 2rem;
+}
