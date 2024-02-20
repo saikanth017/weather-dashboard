@@ -249,8 +249,8 @@ function CurrentWeather({ cityName }) {
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: 16,
-                minHeight: "250px",
-                maxHeight: "250px",
+                minHeight: "280px",
+                // maxHeight: "250px",
                 justifyContent: "space-around",
                 alignItems: "center",
               }}
@@ -290,7 +290,7 @@ function CurrentWeather({ cityName }) {
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: "16px 50px",
-                minHeight: "250px",
+                minHeight: "285px",
               }}
             >
               <div
@@ -422,7 +422,7 @@ function CurrentWeather({ cityName }) {
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: 16,
-                minHeight: "340px",
+                height: "373px",
               }}
             >
               <Typography
@@ -550,7 +550,7 @@ function CurrentWeather({ cityName }) {
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: "16px 40px",
-                minHeight: "340px",
+                minHeight: "375px",
                 gap: 1,
               }}
             >

@@ -13,39 +13,26 @@
   width: 100vw; */
 }
 
-/* .box {
-  height: 100px;
-
+.slider-forecast-box {
+  min-height: 200px; /* or any height you desire */
   background-color: rgba(255, 255, 255, 0.06);
-
-  max-width: 90px;
+  max-width: 690px;
   border-radius: 18px;
-} */
-.slider-box {
-  height: 200px; /* or any height you desire */
-  background-color: rgba(255, 255, 255, 0.06);
-  max-width: 90px;
-  border-radius: 18px;
-  display: "flex";
-  flex-direction: column;
+  display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.box h3 {
+.slider-forecast-box h3 {
   text-align: center;
 }
 
 .slick-slide div {
   margin: 0 1rem;
+  /* height: 100px; */
 }
 
 .MuiContainer-root {
   padding: 22px;
-}
-
-.slick-slider {
-  min-height: 250px;
 }
 
 /* .slick-slider {

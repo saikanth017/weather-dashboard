@@ -1,5 +1,5 @@
 // Traveller.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DateRangePicker from "./DateRangePicker";
 import { Container, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
@@ -26,13 +26,195 @@ import hazeIcon from "../assets/haze.png";
 import { fiveDaysForecasteUpdate } from "../store/forecastSlice";
 import Divider from "@mui/material/Divider";
 import { hourlyUpdate } from "../store/hourlyForeCastSlice";
+import { travelUpdate } from "../store/travelSlice";
+import MultiSliderForeCast from "./MultiSliderForeCast";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Bounce } from "react-toastify";
 
 function Traveller() {
+  const dispatch = useDispatch();
+  const travelData = useSelector((state) => state.travel.value);
+
   const [selectedDates, setSelectedDates] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [travelCityName, setTravelCityName] = useState(null);
+
+  const [cityFound, setCityFound] = useState(true);
+
+  function formatDate(d) {
+    const startDateString = d;
+
+    // Create a new Date object from the provided string
+    const startDate = new Date(startDateString);
+
+    // Extract year, month, and date components
+    const year = startDate.getFullYear();
+    const month = String(startDate.getMonth() + 1).padStart(2, "0"); // Month starts from 0, so add 1
+    const date = String(startDate.getDate()).padStart(2, "0");
+
+    // Form the desired date string
+    const desiredDateString = `${year}-${month}-${date}`;
+
+    return desiredDateString;
+  }
+
+  useEffect(() => {
+    if (startDate && endDate && travelCityName) {
+      handleSubmit(travelCityName, startDate, endDate);
+    }
+  }, [startDate, endDate, travelCityName]);
 
   const handleGetSelectedDates = (dates) => {
-    setSelectedDates(dates);
+    console.log(dates);
+    setStartDate(dates.startDate);
+    setEndDate(dates.endDate);
+    setTravelCityName(dates.travelCityName);
   };
+
+  function getDatesBetween(startDate, endDate) {
+    const dates = [];
+    let currentDate = new Date(startDate); // Initialize with the start date
+
+    while (currentDate <= endDate) {
+      // Push the current date to the array
+      dates.push(new Date(currentDate));
+      // Move to the next day by adding 1 to the date
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+  }
+
+  const handleSubmit = async (travelCityName, startDate, endDate) => {
+    // Adjust start and end dates to UTC
+    const adjustedStartDate = new Date(
+      startDate.getTime() - startDate.getTimezoneOffset() * 60000
+    );
+    const adjustedEndDate = new Date(
+      endDate.getTime() - endDate.getTimezoneOffset() * 60000
+    );
+
+    // Get dates between adjusted start and end dates
+    const datesBetween = getDatesBetween(adjustedStartDate, adjustedEndDate);
+
+    // Loop through each date and fetch data
+    for (const date of datesBetween) {
+      const currentWeatherAPI = `https://api.weatherapi.com/v1/forecast.json?key=dae601f9e86748748ec110640241202&q=${travelCityName}&dt=${
+        date.toISOString().split("T")[0]
+      }`;
+
+      try {
+        const response = await fetch(currentWeatherAPI);
+
+        if (response.ok) {
+          const json = await response.json();
+          // Dispatch data for this specific date
+          dispatch(
+            travelUpdate({ date: date.toISOString().split("T")[0], data: json })
+          );
+        } else {
+          console.error(
+            toast.error("Error : Location not found", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            })
+          );
+          setCityFound(false);
+          break;
+        }
+      } catch (error) {
+        console.error(
+          toast.error("Error : Location not found", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          })
+        );
+        setCityFound(false);
+        break;
+      }
+    }
+  };
+
+  const getCityName = () => {
+    if (travelData) {
+      const keys = Object.keys(travelData);
+      return travelData[keys[0]]?.location?.name;
+    } else {
+      return "-------";
+    }
+  };
+
+  // const getStartDate = () => {
+  //   if (travelData && startDate) {
+  //     return startDate.toISOString().substring(0, 10);
+  //   } else {
+  //     return "--------";
+  //   }
+  // };
+
+  // const getEndDate = () => {
+  //   if (travelData && endDate) {
+  //     return endDate.toISOString().substring(0, 10);
+  //   } else {
+  //     return "-------";
+  //   }
+  // };
+  // const getStartDate = () => {
+  //   if (travelData && startDate) {
+  //     // Adjust the date to UTC before converting to ISO string
+  //     const adjustedStartDate = new Date(
+  //       startDate.getTime() - startDate.getTimezoneOffset() * 60000
+  //     );
+  //     return adjustedStartDate.toISOString().substring(0, 10);
+  //   } else {
+  //     return "--------";
+  //   }
+  // };
+
+  const getStartDate = () => {
+    if (travelData) {
+      const keys = Object.keys(travelData);
+      return keys[0];
+    } else {
+      return "-------";
+    }
+  };
+  const getEndDate = () => {
+    if (travelData) {
+      const keys = Object.keys(travelData);
+      return keys[keys.length - 1];
+    } else {
+      return "-------";
+    }
+  };
+
+  // const getEndDate = () => {
+  //   if (travelData && endDate) {
+  //     // Adjust the date to UTC before converting to ISO string
+  //     const adjustedEndDate = new Date(
+  //       endDate.getTime() - endDate.getTimezoneOffset() * 60000
+  //     );
+  //     return adjustedEndDate.toISOString().substring(0, 10);
+  //   } else {
+  //     return "-------";
+  //   }
+  // };
 
   return (
     <>
@@ -49,7 +231,7 @@ function Traveller() {
       >
         <DateRangePicker handleGetSelectedDates={handleGetSelectedDates} />
         <Grid container sx={{ marginTop: "0px" }} spacing={4} maxWidth="large">
-          <Grid item xs={12} sm={12} md={4} lg={3}>
+          <Grid item xs={12} sm={12} md={3} lg={3}>
             <Paper
               style={{
                 backgroundColor: "rgba(255, 255, 255, 0.06)",
@@ -61,8 +243,7 @@ function Traveller() {
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: 16,
-                minHeight: "250px",
-                maxHeight: "250px",
+                minHeight: "310px",
                 justifyContent: "space-around",
                 alignItems: "center",
               }}
@@ -70,159 +251,35 @@ function Traveller() {
               <Typography
                 sx={{ margin: "40px 0", fontSize: 28, fontWeight: 1000 }}
               >
-                Hyderabad
+                {getCityName()}
               </Typography>
-              {selectedDates ? (
-                <>
-                  <Typography sx={{ margin: "-8px 0 40px 0" }}>
-                    Start Date:{" "}
-                    {selectedDates.startDate.toISOString().substring(0, 10)}
-                  </Typography>
-                  <Typography sx={{ margin: "-8px 0 40px 0" }}>
-                    End Date:{" "}
-                    {selectedDates.endDate.toISOString().substring(0, 10)}
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  <Typography sx={{ margin: "-8px 0 40px 0" }}>
-                    From : 15-02-2024
-                  </Typography>
-                  <Typography sx={{ margin: "-8px 0 40px 0" }}>
-                    To : 15-02-2024
-                  </Typography>
-                </>
-              )}
+
+              <Typography sx={{ margin: "-8px 0 40px 0" }}>
+                Start Date : {getStartDate()}
+              </Typography>
+              <Typography sx={{ margin: "-8px 0 40px 0" }}>
+                End Date : {getEndDate()}
+              </Typography>
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={8} lg={9}>
+          <Grid item xs={12} sm={12} md={9} lg={9}>
             <Paper
               style={{
-                // backgroundColor: "rgba(68, 68, 68, 0.5)", // Adjust the alpha value as needed
                 backgroundColor: "rgba(255, 255, 255, 0.06)",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",
-                justifyContent: "space-evenly",
+                justifyContent: "space-around",
                 color: "white",
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
-                padding: "16px 50px",
+                padding: "0px 10px",
                 minHeight: "250px",
+                gap: 1,
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 16,
-                  alignItems: "stretch",
-                  justifyContent: "space-around",
-                }}
-              >
-                <div>
-                  <Typography sx={{ fontSize: 60, marginBottom: 0 }}>
-                    26°C
-                  </Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      marginTop: -20,
-                    }}
-                  >
-                    <Typography sx={{ padding: 0 }}>Feels like :</Typography>
-                    <Typography sx={{ fontSize: 20 }}>28°C</Typography>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <img src={sunrise} style={{ height: 45 }}></img>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Typography>Sunrise</Typography>
-                    <Typography>6:17 AM</Typography>
-                  </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <img src={sunset} style={{ height: 45 }}></img>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Typography>Sunset</Typography>
-                    <Typography>6:17 AM</Typography>
-                  </div>
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                }}
-              >
-                <img src={sunny} style={{ height: 120 }}></img>
-                <Typography>Sunny</Typography>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <img src={humidity} style={{ height: 45, width: 45 }}></img>
-                  <Typography>17 %</Typography>
-                  <Typography>Humididty</Typography>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <img src={pressure} style={{ height: 45, width: 45 }}></img>
-                  <Typography>1017 mb</Typography>
-                  <Typography>Pressure</Typography>
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <img src={wind} style={{ height: 45, width: 45 }}></img>
-                  <Typography>10 km/h</Typography>
-                  <Typography>Wind Speed</Typography>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <img src={uv} style={{ height: 45, width: 45 }}></img>
-                  <Typography>7 km</Typography>
-                  <Typography>Visibility</Typography>
-                </div>
-              </div>
+              {/* <MultiSlider></MultiSlider> */}
+              <MultiSliderForeCast></MultiSliderForeCast>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -237,7 +294,7 @@ function Traveller() {
                 borderRadius: "24px",
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: "0px 10px",
-                minHeight: "340px",
+                height: "250px",
                 gap: 1,
               }}
             >
@@ -245,7 +302,16 @@ function Traveller() {
             </Paper>
           </Grid>
         </Grid>
+
+        {/* <>
+          <div>
+            <pre style={{ color: "white" }}>
+              {JSON.stringify(travelData, null, 2)}
+            </pre>
+          </div>
+        </> */}
       </Container>
+      <ToastContainer></ToastContainer>
     </>
   );
 }

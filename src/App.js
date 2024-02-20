@@ -14,9 +14,9 @@ function App() {
         <Header></Header>
         {/* <MultiCarousel></MultiCarousel> */}
         <Routes>
-          <Route path="/" element={<CurrentWeather />}></Route>
-          <Route path="/traveller" element={<Traveller />}></Route>
-          <Route path="/farmer" element={<Farmer />}></Route>
+          <Route path="/"></Route>
+          <Route path="/traveller"></Route>
+          <Route path="/farmer"></Route>
         </Routes>
       </BrowserRouter>
     </>

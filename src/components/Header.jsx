@@ -1,11 +1,9 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import CurrentWeather from "./CurrentWeather";
@@ -21,18 +19,23 @@ import { useLocation } from "react-router-dom";
 import Farmer from "./Farmer";
 import Traveller from "./Traveller";
 import NotFound from "./NotFound";
-import DateRangePicker from "./DateRangePicker";
-import { Typography } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Bounce } from "react-toastify";
+import { futureData } from "../store/farmerSlice";
 
 const logoStyle = {
   width: "120px",
   height: "auto",
   cursor: "pointer",
   margin: "18px",
+  marginTop: "24px",
 };
 
 function Header({ mode }) {
   const dispatch = useDispatch();
+
+  const [cityFound, setCityFound] = useState(true);
 
   const location = useLocation();
   const path = location.pathname;
@@ -46,16 +49,71 @@ function Header({ mode }) {
     console.log(event.target.value);
   };
 
-  const [travelCityName, setTravelCityName] = useState("");
+  const [cName, setCName] = useState("");
 
-  const handleTravelInputChange = (event) => {
-    setTravelCityName(event.target.value);
+  const handleCNameChange = (event) => {
+    setCName(event.target.value);
     console.log(event.target.value);
   };
 
-  const weatherData = useSelector((state) => state.data.value);
+  const handleCNameSubmit = async () => {
+    console.log("submit button clicked");
+    var today = new Date();
+    var dates = [];
+    for (var i = 0; i < 15; i++) {
+      var nextDate = new Date(today);
+      nextDate.setDate(today.getDate() + i);
+      dates.push(nextDate.toISOString().slice(0, 10));
+    }
+    for (const date of dates) {
+      const currentWeatherAPI = `https://api.weatherapi.com/v1/forecast.json?key=dae601f9e86748748ec110640241202&q=${cName}&dt=${date}`;
 
-  const handleSubmit = () => {
+      try {
+        const response = await fetch(currentWeatherAPI);
+
+        if (response.ok) {
+          const json = await response.json();
+          dispatch(futureData({ date: date, data: json }));
+        } else {
+          console.error(
+            toast.error("Error : Location not found", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            })
+          );
+          setCityFound(false);
+          break;
+        }
+      } catch (error) {
+        console.error(
+          toast.error("Error : Location not found", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          })
+        );
+        setCityFound(false);
+        break;
+      }
+    }
+  };
+
+  // const weatherData = useSelector((state) => state.data.value);
+
+  const handleSubmit = async (cName) => {
     if (cityName) {
       const currentWeatherAPI = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
       const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
@@ -69,16 +127,35 @@ function Header({ mode }) {
       fetch(forecastAPI)
         .then((response) => response.json())
         .then((json) => {
-          const filteredHourlyForecast = json.list.filter((forecast, index) => {
-            return index <= 5;
-          });
-          dispatch(hourlyUpdate(filteredHourlyForecast));
-          const filteredForecast = json.list.filter((forecast, index) => {
-            return index % 8 === 0;
-          });
+          if (json.list && json.list.length > 0) {
+            const filteredHourlyForecast = json.list.filter(
+              (forecast, index) => {
+                return index <= 5;
+              }
+            );
+            dispatch(hourlyUpdate(filteredHourlyForecast));
 
-          // Dispatch the filtered forecast data to the store
-          dispatch(fiveDaysForecasteUpdate(filteredForecast));
+            const filteredForecast = json.list.filter((forecast, index) => {
+              return index % 8 === 0;
+            });
+            dispatch(fiveDaysForecasteUpdate(filteredForecast));
+          } else {
+            toast.error("Error: Forecast data not available", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            });
+            console.log("Error: Forecast data not available");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching forecast data:", error);
         });
 
       setCityName("");
@@ -162,21 +239,40 @@ function Header({ mode }) {
               </Link>
 
               {page === "traveller" ? (
+                <></>
+              ) : page === "farmer" ? (
                 <>
                   <input
-                    value={travelCityName}
-                    onChange={handleTravelInputChange}
+                    value={cName}
+                    onChange={handleCNameChange}
                     type="text"
                     placeholder="Enter city name..."
                     style={{
                       flex: 1,
-                      marginRight: 18,
+                      marginRight: 28,
                       height: 40,
                       borderRadius: 20,
                       border: "none",
                       paddingLeft: 20,
                     }}
                   ></input>
+                  <button
+                    type="button"
+                    onClick={handleCNameSubmit}
+                    style={{
+                      marginLeft: -60,
+                      borderRadius: 20,
+                      border: "none",
+                      marginRight: 18,
+                      backgroundColor: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <img
+                      src={search}
+                      style={{ height: 20, width: 20, backgroundColor: "none" }}
+                    ></img>
+                  </button>
                 </>
               ) : (
                 <>
@@ -187,7 +283,7 @@ function Header({ mode }) {
                     placeholder="Enter city name..."
                     style={{
                       flex: 1,
-                      marginRight: 18,
+                      marginRight: 28,
                       height: 40,
                       borderRadius: 20,
                       border: "none",
@@ -305,7 +401,14 @@ function Header({ mode }) {
             </Box>
           </Toolbar>
         </Container>
+        <ToastContainer></ToastContainer>
       </AppBar>
+      {path === "/" && <CurrentWeather></CurrentWeather>}
+      {path === "/traveller" && <Traveller></Traveller>}
+      {path === "/farmer" && <Farmer></Farmer>}
+      {path !== "/" && path !== "/traveller" && path !== "/farmer" && (
+        <NotFound></NotFound>
+      )}
     </div>
   );
 }
