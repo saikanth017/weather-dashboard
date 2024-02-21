@@ -10,11 +10,11 @@ import CurrentWeather from "./CurrentWeather";
 import logo from "../assets/logo.png";
 import search from "../assets/search.png";
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { dataUpdate } from "../store/dataSlice";
 import { fiveDaysForecasteUpdate } from "../store/forecastSlice";
 import { hourlyUpdate } from "../store/hourlyForeCastSlice";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Farmer from "./Farmer";
 import Traveller from "./Traveller";
@@ -22,31 +22,71 @@ import NotFound from "./NotFound";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Bounce } from "react-toastify";
-import { futureData } from "../store/farmerSlice";
-
-const logoStyle = {
-  width: "120px",
-  height: "auto",
-  cursor: "pointer",
-  margin: "18px",
-  marginTop: "24px",
-};
+import { futureData, pastData } from "../store/farmerSlice";
 
 function Header({ mode }) {
   const dispatch = useDispatch();
-
-  const [cityFound, setCityFound] = useState(true);
 
   const location = useLocation();
   const path = location.pathname;
   const page = path.substring(path.lastIndexOf("/") + 1);
 
   const [open, setOpen] = React.useState(false);
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
+
   const [cityName, setCityName] = useState("");
 
   const handleInputChange = (event) => {
     setCityName(event.target.value);
-    console.log(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (cityName) {
+        const currentWeatherAPI = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
+        const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
+
+        const currentWeatherResponse = await fetchData(currentWeatherAPI);
+        dispatch(dataUpdate(currentWeatherResponse));
+
+        const forecastResponse = await fetchData(forecastAPI);
+        if (forecastResponse.list && forecastResponse.list.length > 0) {
+          const filteredHourlyForecast = forecastResponse.list.slice(0, 6);
+          dispatch(hourlyUpdate(filteredHourlyForecast));
+
+          const filteredForecast = forecastResponse.list.filter(
+            (forecast, index) => index % 8 === 0
+          );
+          dispatch(fiveDaysForecasteUpdate(filteredForecast));
+        } else {
+          throw new Error("Forecast data not available");
+        }
+        setCityName("");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+      toast.error("Error: Location not found", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+  };
+
+  const fetchData = async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
   };
 
   const [cName, setCName] = useState("");
@@ -56,8 +96,15 @@ function Header({ mode }) {
     console.log(event.target.value);
   };
 
-  const handleCNameSubmit = async () => {
-    console.log("submit button clicked");
+  let locationNotFoundError = false;
+
+  const handleCNameSubmit = () => {
+    handleFutureData();
+    handlePastData();
+    setCName("");
+  };
+
+  const handleFutureData = async () => {
     var today = new Date();
     var dates = [];
     for (var i = 0; i < 15; i++) {
@@ -75,20 +122,22 @@ function Header({ mode }) {
           const json = await response.json();
           dispatch(futureData({ date: date, data: json }));
         } else {
-          console.error(
-            toast.error("Error : Location not found", {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            })
-          );
-          setCityFound(false);
+          if (!locationNotFoundError) {
+            locationNotFoundError = true;
+            console.error(
+              toast.error("Error : Location not found", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+              })
+            );
+          }
           break;
         }
       } catch (error) {
@@ -105,90 +154,65 @@ function Header({ mode }) {
             transition: Bounce,
           })
         );
-        setCityFound(false);
         break;
       }
     }
   };
 
-  // const weatherData = useSelector((state) => state.data.value);
+  const handlePastData = async () => {
+    var today = new Date();
+    var dates = [];
+    for (var i = 0; i < 30; i++) {
+      var prevDate = new Date(today);
+      prevDate.setDate(today.getDate() - i);
+      dates.unshift(prevDate.toISOString().slice(0, 10));
+    }
 
-  const handleSubmit = async (cName) => {
-    if (cityName) {
-      const currentWeatherAPI = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
-      const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
+    for (const date of dates) {
+      const currentWeatherAPI = `https://api.weatherapi.com/v1/history.json?key=dae601f9e86748748ec110640241202&q=${cName}&dt=${date}`;
 
-      fetch(currentWeatherAPI)
-        .then((response) => response.json())
-        .then((json) => {
-          dispatch(dataUpdate(json));
-        });
+      try {
+        const response = await fetch(currentWeatherAPI);
 
-      fetch(forecastAPI)
-        .then((response) => response.json())
-        .then((json) => {
-          if (json.list && json.list.length > 0) {
-            const filteredHourlyForecast = json.list.filter(
-              (forecast, index) => {
-                return index <= 5;
-              }
+        if (response.ok) {
+          const json = await response.json();
+          dispatch(pastData({ date: date, data: json }));
+        } else {
+          if (!locationNotFoundError) {
+            locationNotFoundError = true;
+            console.error(
+              toast.error("Error : Location not found", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+              })
             );
-            dispatch(hourlyUpdate(filteredHourlyForecast));
-
-            const filteredForecast = json.list.filter((forecast, index) => {
-              return index % 8 === 0;
-            });
-            dispatch(fiveDaysForecasteUpdate(filteredForecast));
-          } else {
-            toast.error("Error: Forecast data not available", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-            console.log("Error: Forecast data not available");
           }
-        })
-        .catch((error) => {
-          console.error("Error fetching forecast data:", error);
-        });
-
-      setCityName("");
+          break;
+        }
+      } catch (error) {
+        console.error(
+          toast.error("Error : Location not found", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          })
+        );
+        break;
+      }
     }
-  };
-
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
-  };
-
-  const scrollToSection = (sectionId) => {
-    const sectionElement = document.getElementById(sectionId);
-    const offset = 128;
-    if (sectionElement) {
-      const targetScroll = sectionElement.offsetTop - offset;
-      sectionElement.scrollIntoView({ behavior: "smooth" });
-      window.scrollTo({
-        top: targetScroll,
-        behavior: "smooth",
-      });
-      setOpen(false);
-    }
-  };
-
-  const navigateToFarmer = () => {
-    // Navigate to Farmer component
-    return <Link to="/farmer">Traveller</Link>;
-  };
-
-  const navigateToTraveller = () => {
-    // Navigate to Traveller component
-    console.log("Travel button clicked");
-    return <Link to="/traveller">Traveller</Link>;
   };
 
   return (
@@ -235,7 +259,17 @@ function Header({ mode }) {
               }}
             >
               <Link to="/">
-                <img src={logo} style={logoStyle} alt="logo of sitemark" />
+                <img
+                  src={logo}
+                  style={{
+                    width: "120px",
+                    height: "auto",
+                    cursor: "pointer",
+                    margin: "18px",
+                    marginTop: "24px",
+                  }}
+                  alt="logo of sitemark"
+                />
               </Link>
 
               {page === "traveller" ? (
@@ -412,10 +446,5 @@ function Header({ mode }) {
     </div>
   );
 }
-
-// Header.propTypes = {
-//   mode: PropTypes.oneOf(["dark", "light"]).isRequired,
-//   toggleColorMode: PropTypes.func.isRequired,
-// };
 
 export default Header;

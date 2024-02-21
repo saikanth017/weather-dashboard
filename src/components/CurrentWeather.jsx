@@ -83,7 +83,6 @@ function CurrentWeather({ cityName }) {
     ? weatherData?.visibility / 1000
     : "-----";
 
-  // Define mapping of weather conditions to corresponding icons
   const weatherIcons = {
     Clear: clearIcon,
     Clouds: cloudsIcon,
@@ -94,7 +93,7 @@ function CurrentWeather({ cityName }) {
     Haze: hazeIcon,
   };
 
-  let iconUrl = ""; // Default value for the icon URL
+  let iconUrl = "";
   let weatherCondition = "";
 
   if (
@@ -107,7 +106,7 @@ function CurrentWeather({ cityName }) {
     iconUrl = weatherIcons[weatherCondition];
   }
 
-  let forecasts = []; // Initialize array to store forecast data
+  let forecasts = [];
 
   if (foreCastData && foreCastData.length > 0) {
     forecasts = foreCastData
@@ -125,7 +124,7 @@ function CurrentWeather({ cityName }) {
           };
         }
       })
-      .filter(Boolean); // Remove any undefined entries
+      .filter(Boolean);
   }
 
   let hourlyForecasts = []; // Initialize array to store forecast data
@@ -240,17 +239,16 @@ function CurrentWeather({ cityName }) {
           <Grid item xs={12} sm={12} md={4} lg={3}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
-                WebkitBackdropFilter: "blur(20px)",
-                backdropFilter: "blur(20px)",
+                // background:
+                //   "linear-gradient(174deg, rgba(32,34,38,1) 0%, rgba(134,172,185,1) 87%)",
+                backgroundColor: "#2e2e38",
                 display: "flex",
                 flexDirection: "column",
                 color: "white",
                 borderRadius: "24px",
-                boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
+                boxShadow: "10px 10px 8px rgba(10, 10, 10, 0.1)",
                 padding: 16,
                 minHeight: "280px",
-                // maxHeight: "250px",
                 justifyContent: "space-around",
                 alignItems: "center",
               }}
@@ -279,9 +277,8 @@ function CurrentWeather({ cityName }) {
           </Grid>
           <Grid item xs={12} sm={12} md={8} lg={9}>
             <Paper
-              style={{
-                // backgroundColor: "rgba(68, 68, 68, 0.5)", // Adjust the alpha value as needed
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+              sx={{
+                backgroundColor: "#2e2e38",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",
@@ -291,6 +288,9 @@ function CurrentWeather({ cityName }) {
                 boxShadow: "10px 10px 8px rgba(10, 10, 10, 10.1)",
                 padding: "16px 50px",
                 minHeight: "285px",
+                // backgroundImage: `url("https://giffun.ru/wp-content/uploads/2022/07/image_862810161920026886727.gif")`,
+
+                // backgroundImage: `url("https://images.unsplash.com/photo-1519692933481-e162a57d6721?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")`,
               }}
             >
               <div
@@ -411,7 +411,7 @@ function CurrentWeather({ cityName }) {
           <Grid item xs={12} sm={12} md={12} lg={5}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                backgroundColor: "rgba(255, 255, 255, 0)",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",
@@ -541,7 +541,7 @@ function CurrentWeather({ cityName }) {
           <Grid item xs={12} sm={12} md={12} lg={7}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                backgroundColor: "rgba(255, 255, 255, 0)",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",
@@ -559,7 +559,7 @@ function CurrentWeather({ cityName }) {
                   <div
                     key={index} // Adding a unique key for each element in the list
                     style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.06)",
+                      backgroundColor: "#cdeced",
                       WebkitBackdropFilter: "blur(20px)",
                       backdropFilter: "blur(20px)",
                       borderRadius: "24px",
@@ -604,7 +604,7 @@ function CurrentWeather({ cityName }) {
                 <>
                   <div
                     style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.06)",
+                      backgroundColor: "#cdeced",
                       WebkitBackdropFilter: "blur(20px)",
                       backdropFilter: "blur(20px)",
                       borderRadius: "24px",

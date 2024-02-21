@@ -5,27 +5,7 @@ import { Container, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Paper } from "@mui/material";
 import MultiSlider from "./MultiSlider";
-import Box from "@mui/material/Box";
-import sunny from "../assets/sunny.png";
-import sunrise from "../assets/sunrise.png";
-import sunset from "../assets/sunset.png";
-import humidity from "../assets/humidity.png";
-import pressure from "../assets/pressure.png";
-import wind from "../assets/wind.png";
-import uv from "../assets/uv.png";
-import windspeed from "../assets/windspeed.png";
 import { useDispatch, useSelector } from "react-redux";
-import { dataUpdate } from "../store/dataSlice";
-import clearIcon from "../assets/clear.png";
-import cloudsIcon from "../assets/clouds.png";
-import drizzleIcon from "../assets/drizzle.png";
-import mistIcon from "../assets/mist.png";
-import rainIcon from "../assets/rain.png";
-import snowIcon from "../assets/snow.png";
-import hazeIcon from "../assets/haze.png";
-import { fiveDaysForecasteUpdate } from "../store/forecastSlice";
-import Divider from "@mui/material/Divider";
-import { hourlyUpdate } from "../store/hourlyForeCastSlice";
 import { travelUpdate } from "../store/travelSlice";
 import MultiSliderForeCast from "./MultiSliderForeCast";
 import { ToastContainer, toast } from "react-toastify";
@@ -46,15 +26,12 @@ function Traveller() {
   function formatDate(d) {
     const startDateString = d;
 
-    // Create a new Date object from the provided string
     const startDate = new Date(startDateString);
 
-    // Extract year, month, and date components
     const year = startDate.getFullYear();
     const month = String(startDate.getMonth() + 1).padStart(2, "0"); // Month starts from 0, so add 1
     const date = String(startDate.getDate()).padStart(2, "0");
 
-    // Form the desired date string
     const desiredDateString = `${year}-${month}-${date}`;
 
     return desiredDateString;
@@ -96,10 +73,8 @@ function Traveller() {
       endDate.getTime() - endDate.getTimezoneOffset() * 60000
     );
 
-    // Get dates between adjusted start and end dates
     const datesBetween = getDatesBetween(adjustedStartDate, adjustedEndDate);
 
-    // Loop through each date and fetch data
     for (const date of datesBetween) {
       const currentWeatherAPI = `https://api.weatherapi.com/v1/forecast.json?key=dae601f9e86748748ec110640241202&q=${travelCityName}&dt=${
         date.toISOString().split("T")[0]
@@ -110,7 +85,6 @@ function Traveller() {
 
         if (response.ok) {
           const json = await response.json();
-          // Dispatch data for this specific date
           dispatch(
             travelUpdate({ date: date.toISOString().split("T")[0], data: json })
           );
@@ -160,33 +134,6 @@ function Traveller() {
     }
   };
 
-  // const getStartDate = () => {
-  //   if (travelData && startDate) {
-  //     return startDate.toISOString().substring(0, 10);
-  //   } else {
-  //     return "--------";
-  //   }
-  // };
-
-  // const getEndDate = () => {
-  //   if (travelData && endDate) {
-  //     return endDate.toISOString().substring(0, 10);
-  //   } else {
-  //     return "-------";
-  //   }
-  // };
-  // const getStartDate = () => {
-  //   if (travelData && startDate) {
-  //     // Adjust the date to UTC before converting to ISO string
-  //     const adjustedStartDate = new Date(
-  //       startDate.getTime() - startDate.getTimezoneOffset() * 60000
-  //     );
-  //     return adjustedStartDate.toISOString().substring(0, 10);
-  //   } else {
-  //     return "--------";
-  //   }
-  // };
-
   const getStartDate = () => {
     if (travelData) {
       const keys = Object.keys(travelData);
@@ -203,18 +150,6 @@ function Traveller() {
       return "-------";
     }
   };
-
-  // const getEndDate = () => {
-  //   if (travelData && endDate) {
-  //     // Adjust the date to UTC before converting to ISO string
-  //     const adjustedEndDate = new Date(
-  //       endDate.getTime() - endDate.getTimezoneOffset() * 60000
-  //     );
-  //     return adjustedEndDate.toISOString().substring(0, 10);
-  //   } else {
-  //     return "-------";
-  //   }
-  // };
 
   return (
     <>
@@ -302,14 +237,6 @@ function Traveller() {
             </Paper>
           </Grid>
         </Grid>
-
-        {/* <>
-          <div>
-            <pre style={{ color: "white" }}>
-              {JSON.stringify(travelData, null, 2)}
-            </pre>
-          </div>
-        </> */}
       </Container>
       <ToastContainer></ToastContainer>
     </>

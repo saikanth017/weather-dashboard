@@ -1,32 +1,7 @@
-// Traveller.js
-import React, { useState, useEffect } from "react";
-import DateRangePicker from "./DateRangePicker";
 import { Container, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Paper } from "@mui/material";
-import MultiSlider from "./MultiSlider";
-import Box from "@mui/material/Box";
-import sunny from "../assets/sunny.png";
-import sunrise from "../assets/sunrise.png";
-import sunset from "../assets/sunset.png";
-import humidity from "../assets/humidity.png";
-import pressure from "../assets/pressure.png";
-import wind from "../assets/wind.png";
-import uv from "../assets/uv.png";
-import windspeed from "../assets/windspeed.png";
-import { useDispatch, useSelector } from "react-redux";
-import { dataUpdate } from "../store/dataSlice";
-import clearIcon from "../assets/clear.png";
-import cloudsIcon from "../assets/clouds.png";
-import drizzleIcon from "../assets/drizzle.png";
-import mistIcon from "../assets/mist.png";
-import rainIcon from "../assets/rain.png";
-import snowIcon from "../assets/snow.png";
-import hazeIcon from "../assets/haze.png";
-import { fiveDaysForecasteUpdate } from "../store/forecastSlice";
-import Divider from "@mui/material/Divider";
-import { hourlyUpdate } from "../store/hourlyForeCastSlice";
-import { travelUpdate } from "../store/travelSlice";
+import { useSelector } from "react-redux";
 import MultiSliderForeCast from "./MultiSliderForeCast";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -141,20 +116,10 @@ function Farmer() {
                 gap: 1,
               }}
             >
-              {/* <Typography>Past 16 days Forecast</Typography> */}
-              {/* <MultiSlider></MultiSlider> */}
-              {/* <MultiSliderForeCast id="pastData"></MultiSliderForeCast> */}
+              <MultiSliderForeCast id="pastData"></MultiSliderForeCast>
             </Paper>
           </Grid>
         </Grid>
-
-        <>
-          <div>
-            <pre style={{ color: "white" }}>
-              {JSON.stringify(futureData, null, 2)}
-            </pre>
-          </div>
-        </>
       </Container>
       <ToastContainer></ToastContainer>
     </>
