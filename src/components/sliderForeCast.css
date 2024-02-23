@@ -6,20 +6,21 @@
 
 .carousel {
   padding: 5rem;
-  /* background-color: black; */
   color: white;
   max-width: 100vw;
-  /* height: 100vh;
-  width: 100vw; */
 }
 
 .slider-forecast-box {
-  min-height: 200px; /* or any height you desire */
-  background-color: rgba(255, 255, 255, 0.06);
+  min-height: 200px;
   max-width: 690px;
   border-radius: 18px;
   display: flex;
   justify-content: center;
+  background: linear-gradient(
+    90deg,
+    rgba(44, 46, 45, 1) 0%,
+    rgba(14, 16, 15, 1) 91%
+  );
 }
 
 .slider-forecast-box h3 {
@@ -28,24 +29,11 @@
 
 .slick-slide div {
   margin: 0 1rem;
-  /* height: 100px; */
 }
 
 .MuiContainer-root {
   padding: 22px;
 }
-
-/* .slick-slider {
-  margin: 0;
-} */
-
-/* .slick-next {
-  right: -40px !important;
-} */
-
-/* .slice-prev {
-  left: -40px;
-} */
 
 .slick-dots li.slick-active button:before {
   color: lightgreen !important;

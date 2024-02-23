@@ -111,7 +111,7 @@ function MultiSlider() {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "space-evenly", // Spread out content evenly
+                        justifyContent: "space-evenly",
                         alignItems: "center",
                         margin: "auto",
                         gap: 18,
@@ -134,7 +134,6 @@ function MultiSlider() {
                         src={hourData.condition.icon}
                         alt="Rainy weather"
                       />
-
                       <h3>{hourData.temp_c}°C</h3>
                     </div>
                   </div>
@@ -160,7 +159,7 @@ function MultiSlider() {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-evenly", // Spread out content evenly
+                    justifyContent: "space-evenly",
                     alignItems: "center",
                     margin: "auto",
                     gap: 18,

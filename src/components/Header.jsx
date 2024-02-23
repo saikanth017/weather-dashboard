@@ -8,6 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import CurrentWeather from "./CurrentWeather";
 import logo from "../assets/logo.png";
+import logoname from "../assets/logoname.png";
 import search from "../assets/search.png";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -45,24 +46,9 @@ function Header({ mode }) {
   const handleSubmit = async () => {
     try {
       if (cityName) {
-        const currentWeatherAPI = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
-        const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=88950ebffe6ea2e470a6af895b42676b`;
-
+        const currentWeatherAPI = `https://api.weatherapi.com/v1/forecast.json?key=dae601f9e86748748ec110640241202&q=${cityName}&days=5`;
         const currentWeatherResponse = await fetchData(currentWeatherAPI);
         dispatch(dataUpdate(currentWeatherResponse));
-
-        const forecastResponse = await fetchData(forecastAPI);
-        if (forecastResponse.list && forecastResponse.list.length > 0) {
-          const filteredHourlyForecast = forecastResponse.list.slice(0, 6);
-          dispatch(hourlyUpdate(filteredHourlyForecast));
-
-          const filteredForecast = forecastResponse.list.filter(
-            (forecast, index) => index % 8 === 0
-          );
-          dispatch(fiveDaysForecasteUpdate(filteredForecast));
-        } else {
-          throw new Error("Forecast data not available");
-        }
         setCityName("");
       }
     } catch (error) {
@@ -247,6 +233,8 @@ function Header({ mode }) {
                 theme.palette.mode === "light"
                   ? `0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)`
                   : "0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)",
+              background:
+                "linear-gradient(90deg, rgba(46,47,46,1) 0%, rgba(19,21,20,1) 91%)",
             })}
           >
             <Box
@@ -260,13 +248,12 @@ function Header({ mode }) {
             >
               <Link to="/">
                 <img
-                  src={logo}
+                  src={logoname}
                   style={{
-                    width: "120px",
+                    width: "70px",
                     height: "auto",
                     cursor: "pointer",
-                    margin: "18px",
-                    marginTop: "24px",
+                    margin: "8px",
                   }}
                   alt="logo of sitemark"
                 />
@@ -280,7 +267,7 @@ function Header({ mode }) {
                     value={cName}
                     onChange={handleCNameChange}
                     type="text"
-                    placeholder="Enter city name..."
+                    placeholder="City name..."
                     style={{
                       flex: 1,
                       marginRight: 28,
@@ -314,7 +301,7 @@ function Header({ mode }) {
                     value={cityName}
                     onChange={handleInputChange}
                     type="text"
-                    placeholder="Enter city name..."
+                    placeholder="City name..."
                     style={{
                       flex: 1,
                       marginRight: 28,
@@ -322,6 +309,7 @@ function Header({ mode }) {
                       borderRadius: 20,
                       border: "none",
                       paddingLeft: 20,
+                      minWidth: 20,
                     }}
                   ></input>
                   <button
@@ -353,7 +341,7 @@ function Header({ mode }) {
             >
               <Link to="/traveller">
                 <Button
-                  style={{ color: "black" }}
+                  style={{ color: "#1976d2" }}
                   variant="text"
                   size="small"
                   component="a"
@@ -364,7 +352,7 @@ function Header({ mode }) {
 
               <Link to="/farmer">
                 <Button
-                  style={{ color: "black" }}
+                  style={{ color: "#1976d2" }}
                   variant="text"
                   size="small"
                   component="a"

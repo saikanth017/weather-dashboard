@@ -53,8 +53,10 @@ function Farmer() {
           <Grid item xs={12} sm={12} md={3} lg={3}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                background:
+                  "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                 WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid #252623",
                 backdropFilter: "blur(20px)",
                 display: "flex",
                 flexDirection: "column",
@@ -84,7 +86,8 @@ function Farmer() {
           <Grid item xs={12} sm={12} md={9} lg={9}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                backgroundColor: "#161716",
+                border: "1px solid #252623",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",
@@ -103,7 +106,8 @@ function Farmer() {
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                backgroundColor: "#161716",
+                border: "1px solid #252623",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",

@@ -1,4 +1,3 @@
-// Traveller.js
 import React, { useState, useEffect } from "react";
 import DateRangePicker from "./DateRangePicker";
 import { Container, Typography } from "@mui/material";
@@ -29,11 +28,9 @@ function Traveller() {
     const startDate = new Date(startDateString);
 
     const year = startDate.getFullYear();
-    const month = String(startDate.getMonth() + 1).padStart(2, "0"); // Month starts from 0, so add 1
+    const month = String(startDate.getMonth() + 1).padStart(2, "0");
     const date = String(startDate.getDate()).padStart(2, "0");
-
     const desiredDateString = `${year}-${month}-${date}`;
-
     return desiredDateString;
   }
 
@@ -52,20 +49,15 @@ function Traveller() {
 
   function getDatesBetween(startDate, endDate) {
     const dates = [];
-    let currentDate = new Date(startDate); // Initialize with the start date
-
+    let currentDate = new Date(startDate);
     while (currentDate <= endDate) {
-      // Push the current date to the array
       dates.push(new Date(currentDate));
-      // Move to the next day by adding 1 to the date
       currentDate.setDate(currentDate.getDate() + 1);
     }
-
     return dates;
   }
 
   const handleSubmit = async (travelCityName, startDate, endDate) => {
-    // Adjust start and end dates to UTC
     const adjustedStartDate = new Date(
       startDate.getTime() - startDate.getTimezoneOffset() * 60000
     );
@@ -169,8 +161,10 @@ function Traveller() {
           <Grid item xs={12} sm={12} md={3} lg={3}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                background:
+                  "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                 WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid #252623",
                 backdropFilter: "blur(20px)",
                 display: "flex",
                 flexDirection: "column",
@@ -200,7 +194,8 @@ function Traveller() {
           <Grid item xs={12} sm={12} md={9} lg={9}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                backgroundColor: "#161716",
+                border: "1px solid #252623",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",
@@ -213,14 +208,14 @@ function Traveller() {
                 gap: 1,
               }}
             >
-              {/* <MultiSlider></MultiSlider> */}
               <MultiSliderForeCast></MultiSliderForeCast>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Paper
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                backgroundColor: "#161716",
+                border: "1px solid #252623",
                 WebkitBackdropFilter: "blur(20px)",
                 backdropFilter: "blur(20px)",
                 display: "flex",

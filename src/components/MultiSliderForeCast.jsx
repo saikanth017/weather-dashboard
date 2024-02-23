@@ -107,6 +107,8 @@ function MultiSliderForeCast({ id }) {
                     margin: 0,
                     minHeight: 200,
                     alignItems: "stretch",
+                    background:
+                      "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                   }}
                 >
                   <h3 style={{ fontSize: 14, margin: "20px auto 1px auto" }}>
@@ -231,6 +233,8 @@ function MultiSliderForeCast({ id }) {
                     margin: 0,
                     minHeight: 200,
                     alignItems: "stretch",
+                    background:
+                      "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                   }}
                 >
                   <h3 style={{ fontSize: 14, margin: "20px auto 1px auto" }}>
@@ -326,6 +330,8 @@ function MultiSliderForeCast({ id }) {
                     margin: 0,
                     minHeight: 200,
                     alignItems: "stretch",
+                    background:
+                      "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                   }}
                 >
                   <h3 style={{ fontSize: 14, margin: "20px auto 1px auto" }}>
@@ -449,6 +455,8 @@ function MultiSliderForeCast({ id }) {
                     margin: 0,
                     minHeight: 200,
                     alignItems: "stretch",
+                    background:
+                      "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                   }}
                 >
                   <h3 style={{ fontSize: 14, margin: "20px auto 1px auto" }}>
@@ -543,6 +551,8 @@ function MultiSliderForeCast({ id }) {
                   margin: 0,
                   minHeight: 200,
                   alignItems: "stretch",
+                  background:
+                    "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                 }}
               >
                 <h3 style={{ fontSize: 14, margin: "20px auto 1px auto" }}>
@@ -666,6 +676,8 @@ function MultiSliderForeCast({ id }) {
                   margin: 0,
                   minHeight: 200,
                   alignItems: "stretch",
+                  background:
+                    "linear-gradient(90deg, rgba(44,46,45,1) 0%, rgba(14,16,15,1) 91%)",
                 }}
               >
                 <h3 style={{ fontSize: 14, margin: "20px auto 1px auto" }}>
